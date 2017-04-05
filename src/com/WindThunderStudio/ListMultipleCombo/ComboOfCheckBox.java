@@ -92,14 +92,9 @@ public class ComboOfCheckBox extends JFrame {
 			public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
 				JLabel label = null;
-				JCheckBox box = null;
-				if (value instanceof JCheckBox) {
-					label = new JLabel(((JCheckBox)value).getText());
-					box = new JCheckBox(label.getText());
-					
-				}
-					
-				return box;
+				
+				
+				return label;
 			}
 			public void setSelected(int i, boolean selected) {
 				this.selected[i] = selected;
