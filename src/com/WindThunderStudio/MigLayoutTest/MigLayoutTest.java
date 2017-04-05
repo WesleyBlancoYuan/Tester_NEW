@@ -4,6 +4,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,10 +38,10 @@ public class MigLayoutTest extends JFrame{
 //		p.setSize(mainFrame.getSize());
 //		p.setMaximumSize(mainFrame.getMaximumSize());
 //		p.setPreferredSize(mainFrame.getPreferredSize());
-		p.setLayout(new MigLayout("fill, debug","[max!]","[50:20:30]10[100::]10[20::]10[50!]10[20!]"));
+		p.setLayout(new MigLayout("fill, debug","[]","[50:20:30]10[100::]10[20::]10[50!]10[20!]"));
 		
 		panel = new JPanel();
-		panel.setLayout(new MigLayout("fillx", "[left, 15%]10[left, 35%]10[left, 15%]10[left, 35%]", "[center]10[center]"));
+		panel.setLayout(new MigLayout("fillx, debug", "[left, 15%]10[left, 35%]10[left, 15%]10[left, 35%]", "[center]10[center]10[]"));
 		lblResumenAuto = new JLabel("MY LABEL 1");
 		lblResumenAutoResult = new JLabel("1111111111111111111111");
 		
@@ -65,6 +66,9 @@ public class MigLayoutTest extends JFrame{
 		panel.add(lblResumenFechaHora);
 		panel.add(lblResumenFechaHoraResult, "growx");
 		
+		
+		JButton button = new JButton("now what????");
+		panel.add(button, "cell 2 2, gapleft push");
 		p.add(panel);
 		
 		getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
