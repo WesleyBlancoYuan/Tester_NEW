@@ -1,10 +1,14 @@
 package com.WindThunderStudio.JTextpaneLineSpacing;
 
+import java.awt.BorderLayout;
 import java.io.File;
 
 import javax.swing.JFrame;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EtchedBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -12,54 +16,82 @@ import javax.swing.text.StyleConstants;
 import net.miginfocom.swing.MigLayout;
 
 public class Test1_ChangeStyleAndAppend extends JFrame {
+    public class MyJTextPane extends JTextPane {
+        /**
+         * Append some text to this pane.
+         * @param s
+         */
+        public void append(String s) {
+            try {
+               Document doc = this.getDocument();
+               doc.insertString(doc.getLength(), s, null);
+            } catch(BadLocationException e) {
+                System.err.println(e);
+            }
+        }
+        
+        /**
+         * Append some text and change line.
+         * @param s
+         */
+        public void appendLine(String s) {
+            try {
+                Document doc = this.getDocument();
+                doc.insertString(doc.getLength(), s + System.lineSeparator(), null);
+            } catch(BadLocationException e) {
+                System.err.println(e);
+            }
+        }
+        
+//        @Override
+//        public String getText() {
+//            String string = "";
+//            try {
+//                string = this.getDocument().getText(0, this.getDocument().getLength());
+//            } catch (BadLocationException e) {
+//                e.printStackTrace();
+//            }
+//            return string;
+//        }
+    }
     public Test1_ChangeStyleAndAppend() {
         begin();
     }
 
     private void begin() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        setLayout(new MigLayout("insets 5, fillx, flowy", "[]", "[]5[]5[]"));
+        setLayout(new BorderLayout());
+        MyJTextPane pane0 = new MyJTextPane();
+        pane0.appendLine("MyJTextPane using append() and then calling setText()");
+        pane0.appendLine("Second line. ");
+        pane0.appendLine("Third line");
+        pane0.setText(pane0.getText() + "At last" + System.lineSeparator());
+        pane0.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+        add(pane0, BorderLayout.NORTH);
         
-        setLayout(new MigLayout("insets 5, fillx", "[]", "[]"));
+        MyJTextPane pane = new MyJTextPane();
+//        changeLineSpacing(pane, 1.5f, false);
+        pane.appendLine("MyJTextPane calling appendLine()");
+        pane.appendLine("Second line. ");
+        pane.appendLine("Third line");
+        pane.appendLine("At last");
+        pane.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+        add(pane, BorderLayout.CENTER);
         
-        JTextPane pane = new JTextPane();
-        changeLineSpacing(pane, 1.5f, false);
         
-        pane.setText("Now what?" + System.getProperty("line.separator") + "Second line. ");
-        appendTextToPane(pane, System.getProperty("line.separator"));
-        appendTextToPane(pane, "Third line");
-        
-        add(pane, "grow");
+        JTextPane pane2 = new JTextPane();
+        pane2.setText("Normal JTextPane calling setText()");
+        pane2.setText(pane2.getText() + System.lineSeparator() + "Second line. ");
+        pane2.setText(pane2.getText() + System.lineSeparator() + "Third line");
+        pane2.setText(pane2.getText() + System.lineSeparator() + "At last");
+        pane2.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+        add(pane2, BorderLayout.SOUTH);
         
         pack();
         setVisible(true);
     }
-
-    /**
-     * Select all the text of a <code>JTextPane</code> first and then set the line spacing.
-     * @param pane the <code>JTextPane</code> to apply the change
-     * @param factor the factor of line spacing. For example, <code>1.0f</code>.
-     * @param replace whether the new <code>AttributeSet</code> should replace the old set. If set to <code>false</code>, will merge with the old one.
-     */
     
-    /* it will be called in the content change listener, AND the first time the content is filled, 
-     * in Gestor_Configuration.mostrarAtributosImpresoraWC() */
-    public static void changeLineSpacing(JTextPane pane, float factor, boolean replace) {
-        pane.selectAll();
-        MutableAttributeSet set = new SimpleAttributeSet(pane.getParagraphAttributes());
-        StyleConstants.setLineSpacing(set, factor);
-        pane.setParagraphAttributes(set, replace);
-        pane.setCaretPosition(0); //scroll to the top.
-    }
-    
-    /**
-     * Append some text to the JTextpane.
-     * 
-     * @param args
-     */
-    
-    private void appendTextToPane(JTextPane pane, String text){
-        pane.setText(pane.getText() + text);
-    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
 

@@ -27,8 +27,8 @@ public class PrintingTest1 {
         
         Font font1 = new Font("Courier New", Font.PLAIN, 12);
         Font font2 = new Font("Courier New", Font.PLAIN, 10);
-        Font font3 = new Font("Courier New", Font.PLAIN, 9);
-        HelloWorldPrinter printer = new PrintingTest1().new HelloWorldPrinter();
+        Font font3 = new Font("Courier New", Font.PLAIN, 8);
+        CELPrinter printer = new PrintingTest1().new CELPrinter();
         printer.setFont1(font1);
         printer.setFont2(font2);
         printer.setFont3(font3);
@@ -39,70 +39,48 @@ public class PrintingTest1 {
         printer.setHeaderline1("HeaderLine1: top");
         printer.setHeaderline2("HeaderLine2: bot");
         
-        String[][] rows = new String[85][2];
-        for (int i=0; i<rows.length; i++) {
+        String[][] rows = new String[86][2];
+        rows[0] = new String[] {"----10----" + "----20----"+ "----30----"+ "----40----"+ "----50----"
+        + "----60----"+ "----70----"+ "----80----"+ "----90----"+ "---100----"
+                + "---110----"+ "---120----"+ "---130----"+ "---140----"+ "---150----"+ "---160----"+ "---170----"+ "---180----"+ "---190----"+ "---200----", 
+                "qwertyuiop[]ASDFGHJKL;'\\ZXCvbnm,./1234567890/*-+"};
+        for (int i=1; i<rows.length; i++) {
             rows[i] = new String[] {"row " + i + ", line 1", "      row " + i + ", line 2"};
         }
         printer.setRows(rows.length);
         printer.setRowsData(rows);
         
         PrinterJob job = PrinterJob.getPrinterJob();
-
-        Paper papel = new Paper();
-//        papel.setImageableArea(72, 72, 450, 697);
-        papel.setImageableArea(0, 0, 705, 506);
-        papel.setSize(841, 595);
-        PageFormat pf = job.getPageFormat(attributes)
-        pf.setOrientation(PageFormat.LANDSCAPE);
-        pf.setPaper(papel);
-//        PageFormat pageFormat = job.pageDialog(job.defaultPage());
-//        pageFormat.setPaper(papel);
-//        pageFormat.setOrientation(PageFormat.PORTRAIT);
-//        pageFormat.setOrientation(PageFormat.LANDSCAPE);
-        Book book = new Book();
-        book.append(printer, pf);
-        book.append(printer, pf);
         
-//        job.setPageable(book);
-//        job.setPrintable(printer);
-        //this is not needed.
-//        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-        //disable duplex (double cara) printing
-//        aset.remove(Sides.DUPLEX);
+        PageFormat pf0 = job.getPageFormat(null);
+        Paper paper0 = pf0.getPaper();
+        paper0.setImageableArea(10, 10, paper0.getWidth(), paper0.getHeight());
+        pf0.setPaper(paper0);
+        pf0.setOrientation(PageFormat.LANDSCAPE);
         
-        PrintRequestAttributeSet pset = new HashPrintRequestAttributeSet();
-        pset.add(Sides.ONE_SIDED);
-        DocAttributeSet dset = new HashDocAttributeSet();
-//        PageFormat pf = job.getPageFormat(aset);
-//        pf.setOrientation(PageFormat.LANDSCAPE);
-//        job.setPrintable(printer, pf);
-        //cross-platform print dialog, java l&f
-//        boolean doPrint = job.printDialog(aset);
-//        if (doPrint) {
-//            try {
-//                job.print(aset);
-//            } catch (PrinterException e) {
-//                System.out.println("Cancelled. ");
-//            }
-//        }
+        PageFormat pf = job.validatePage(pf0);
+//        Paper papel = new Paper();
+//        papel.setSize(841, 595);
+//        papel.setImageableArea(37, 30, 506, 705);
+        job.setPrintable(printer, pf);
         
         //system print dialog
-//        boolean doPrint = job.printDialog();
-//        if (doPrint) {
-//            try {
-////                job.print(aset);
+        boolean doPrint = job.printDialog();
+        if (doPrint) {
+            try {
+                job.print();
 //                job.print(); //to read the horizontal orientation, must use print(). No set needed.
-//            } catch (PrinterException e) {
-//                System.out.println("Cancelled. ");
-//            }
-//        }
+            } catch (PrinterException e) {
+                System.out.println("Cancelled. ");
+            }
+        }
     }
     
     /**
      * @author 99GU6879
      *
      */
-    class HelloWorldPrinter implements Printable {
+    class CELPrinter implements Printable {
         private Font font1;
         private Font font2;
         private Font font3;
@@ -131,13 +109,12 @@ public class PrintingTest1 {
         
         private int pageLimit;
         private int linesDataOnPage0;
-        private int linesOnPage0;
         private int linesPerPage;
         
         /**
          * The array index of row data when every new pages starts to print.
          */
-        private int newStartIndex;
+        private int[] newStartIndex;
         public void setRows(int rows) {
             this.rows = rows;
         }
@@ -179,7 +156,7 @@ public class PrintingTest1 {
             this.rowsData = rowsData;
         }
 
-        public HelloWorldPrinter() {
+        public CELPrinter() {
             // TODO Auto-generated constructor stub
         }
         
@@ -194,11 +171,10 @@ public class PrintingTest1 {
             
             double pageHeight = pf.getImageableHeight();
             
-            //title 1, title 2 (2 lines), header (2 lines)
-            linesDataOnPage0 = (int)((pageHeight - lineHeight1 - lineHeight2*2 - lineHeight3*2) / lineHeight3);
-            linesOnPage0 = linesDataOnPage0 + 5;
+            //title 1, title 2 (2 lines), header (2 lines), footer/pagination (4 lines)
+            linesDataOnPage0 = (int)((pageHeight - lineHeight1 - lineHeight2*2 - lineHeight3*2 - lineHeight3*4) / lineHeight3);
             
-            linesPerPage = (int)pageHeight / lineHeight3;
+            linesPerPage = (int)pageHeight / lineHeight3 - 4; // pagination (4 lines)
             
             int pageLimit0 = 0;
             if (dataLines <= linesDataOnPage0) {
@@ -208,10 +184,13 @@ public class PrintingTest1 {
                 pageLimit0 = (dataLines - linesDataOnPage0 - lastPageLines) / linesPerPage + 2;
             }
             
+            newStartIndex = new int[pageLimit0 + 1];
+            newStartIndex[0] = 0;
             return pageLimit0;
         }
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+            
             if (pageLimit == 0) { //not calculated yet.
                 this.dataLines = rows * 2;
                 pageLimit = calculatePageLimit(dataLines, graphics, pageFormat);
@@ -222,57 +201,40 @@ public class PrintingTest1 {
             
             if (pageIndex < pageLimit) {
                 int y = 36;
+                // 1. print the title 1
+                g2d.setFont(font1);
+                g2d.drawString(title1, 20, y);
+                y += lineHeight1;
                 
-                if (pageIndex == 0) {
-                    // 1. print the title 1
-                    g2d.setFont(font1);
-                    g2d.drawString(title1, 10, y);
-                    y += lineHeight1;
-                    
-                    // 2. print title 2
-                    g2d.setFont(font2);
-                    g2d.drawString(title2line1, 10, y);
-                    y += lineHeight2;
-                    g2d.drawString(title2line2, 10, y);
-                    y += lineHeight2;
-                    
-                    // 3. print header
-                    g2d.setFont(font3);
-                    g2d.drawString(headerline1, 10, y);
+                // 2. print title 2
+                g2d.setFont(font2);
+                g2d.drawString(title2line1, 20, y);
+                y += lineHeight2;
+                g2d.drawString(title2line2, 20, y);
+                y += lineHeight2;
+                
+                // 3. print header
+                g2d.setFont(font3);
+                g2d.drawString(headerline1, 20, y);
+                y += lineHeight3;
+                g2d.drawString(headerline2, 20, y);
+                y += lineHeight3;
+                
+                // 4.calculate the new page break line number (where to stop this time).
+                // if all records are printed, stop too.
+                int end = Math.min(rowsData.length, newStartIndex[pageIndex] + (int)(linesDataOnPage0 / 2));
+                
+                
+                for (int i=newStartIndex[pageIndex]; i< end; i++) {
+                    g2d.drawString(rowsData[i][0], 20, y);
                     y += lineHeight3;
-                    g2d.drawString(headerline2, 10, y);
+                    g2d.drawString(rowsData[i][1], 20, y);
                     y += lineHeight3;
-                    
-                    // 4. print data
-                    for (int i=0; i< (int)(linesDataOnPage0 / 2); i++) {
-                        g2d.drawString(rowsData[i][0], 10, y);
-                        y += lineHeight3;
-                        g2d.drawString(rowsData[i][1], 10, y);
-                        y += lineHeight3;
-                    }
-                    
-                    y = 0;
-                    newStartIndex = (int)(linesDataOnPage0 / 2);
-                    return PAGE_EXISTS;
-                } else {
-                    int end;
-                    if (newStartIndex + (int)(linesPerPage / 2)  > rowsData.length) {
-                        end = rowsData.length;
-                    } else {
-                        end = newStartIndex + (int)(linesPerPage / 2);
-                    }
-                    g2d.setFont(font3);
-                    for (int i=newStartIndex; i< end; i++) {
-                        g2d.drawString(rowsData[i][0], 10, y);
-                        y += lineHeight3;
-                        g2d.drawString(rowsData[i][1], 10, y);
-                        y += lineHeight3;
-                    }
-                    
-                    y = 0;
-                    newStartIndex +=(int)(linesPerPage / 2);
-                    return PAGE_EXISTS;
                 }
+                g2d.drawString("pág. " + (pageIndex + 1), (int)pageFormat.getImageableWidth() / 2, (int)pageFormat.getImageableHeight() - 15);
+                y = 0;
+                newStartIndex[pageIndex + 1] = end;
+                return PAGE_EXISTS;
             } else {
                 return NO_SUCH_PAGE;
             }
