@@ -28,7 +28,7 @@ public class TitleHeightChange extends JFrame {
         setDefaultLookAndFeelDecorated(true);
         try {
 //            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-//            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 //            UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 //            UIManager.setLookAndFeel(new MetalLookAndFeel());
 //            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -38,6 +38,7 @@ public class TitleHeightChange extends JFrame {
         
         
         final JFrame frame1 = new JFrame();
+        frame1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame1.setTitle("Frame1");
         frame1.setLayout(new BorderLayout());
         final JTextArea area1 = new JTextArea();
@@ -82,6 +83,7 @@ public class TitleHeightChange extends JFrame {
         frame1.setVisible(true);
         
         final JFrame frame2 = new JFrame();
+        frame2.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame2.setTitle("Frame2");
         frame2.setLayout(new BorderLayout());
         final JTextArea area2 = new JTextArea();
@@ -142,6 +144,7 @@ public class TitleHeightChange extends JFrame {
             }
         });
         b.setPreferredSize(new Dimension(100, 30));
+        b.setSize(new Dimension(100, 30));
         add(b, BorderLayout.CENTER);
         
         pack();
