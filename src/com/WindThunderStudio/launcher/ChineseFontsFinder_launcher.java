@@ -1,6 +1,6 @@
 package com.WindThunderStudio.launcher;
 
-import com.WindThunderStudio.ChineseFontsFinder.ChineseFontFinder;
+import com.WindThunderStudio.SwingTest.ChineseFontsFinder.ChineseFontFinder;
 
 public class ChineseFontsFinder_launcher {
 
