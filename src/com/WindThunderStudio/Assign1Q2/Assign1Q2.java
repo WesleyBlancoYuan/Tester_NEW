@@ -19,48 +19,48 @@ public class Assign1Q2 {
         }
         words.add(sb.toString()); //add last word because the last char is not space/'\n'.
         
-        char[] output = null;
-        StringBuilder sb2 = new StringBuilder(0);
         for (int i=0; i<words.size(); i++) {
-            String word = words.get(i);
-            char[] line = new char[lineWidth-1]; //last char is for \n
+            if (words.get(i).length() >= lineWidth) {
+                lineWidth = words.get(i).length();
+            }
+        }
+        char[] output = null;
+        StringBuilder sb2 = new StringBuilder("");
+        StringBuilder line = null;
+        for (String word: words) {
+            line = new StringBuilder(lineWidth);
+            for (int i=0; i<lineWidth; i++) {
+                line.append(" ");
+            }
             switch (just) {
             case 'l':
-                for (int j=0; j<word.length(); j++) {
-                    line[j] = word.toCharArray()[j];
-                }
+                line.replace(0, word.length(), word);
                 break;
                 
             case 'r':
-                for (int j=lineWidth-1-word.length(); j<lineWidth-1; j++) {
-                    line[j] = word.toCharArray()[j-(word.length()-lineWidth-1)];
-                }
+                line.replace(lineWidth-1-word.length(), lineWidth-1, word);
                 break;
                 
             case 'c':
                 
-                int rest = lineWidth-1 - word.length();
+                int rest = lineWidth-1-word.length(); //all the spaces' length
                 int begin = 0;
                 if (rest % 2 != 0) {
                     begin = (int)(rest/2)+1;
                 } else {
                     begin = rest/2;
                 }
-                for (int j=begin; j<begin+word.length(); j++) {
-                    line[j] = word.toCharArray()[j-(begin)];
-                }
+                
+                line.replace(begin, begin+word.length(), word);
                 break;
             }
             
-            for (int k=0; k<line.length; k++) {
-                sb2.append(line[k]);
-            }
-            sb2.append('\n');
+            line.append('\n');
+            sb2.append(line);
         }
-        output = new char[sb2.length()];
-        for (int i=0; i<output.length; i++) {
-            output[i] = sb2.charAt(i);
-        }
+        
+        
+        output = sb2.toString().toCharArray();
         return output;
 //        StringBuilder result = new StringBuilder("");
 //        StringBuilder sb2 = null;
