@@ -1,4 +1,4 @@
-package com.WindThunderStudio.TableWithComboBox;
+package com.WindThunderStudio.SwingTest.TableWithComboBox;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;

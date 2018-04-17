@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 
 import net.miginfocom.swing.MigLayout;
 
+
 public class TestWithPrivateStaticButton extends JFrame {
     private static JButton b1;
     public static JButton b2;
