@@ -28,7 +28,7 @@ public class Assign1Q2 {
         StringBuilder sb2 = new StringBuilder("");
         StringBuilder line = null;
         for (String word: words) {
-            line = new StringBuilder(lineWidth);
+            line = new StringBuilder("");
             for (int i=0; i<lineWidth; i++) {
                 line.append(" ");
             }
@@ -38,12 +38,12 @@ public class Assign1Q2 {
                 break;
                 
             case 'r':
-                line.replace(lineWidth-1-word.length(), lineWidth-1, word);
+                line.replace(lineWidth-word.length(), lineWidth, word);
                 break;
                 
             case 'c':
                 
-                int rest = lineWidth-1-word.length(); //all the spaces' length
+                int rest = lineWidth-word.length(); //all the spaces' length
                 int begin = 0;
                 if (rest % 2 != 0) {
                     begin = (int)(rest/2)+1;
@@ -62,38 +62,6 @@ public class Assign1Q2 {
         
         output = sb2.toString().toCharArray();
         return output;
-//        StringBuilder result = new StringBuilder("");
-//        StringBuilder sb2 = null;
-//        for (String word: words) {
-//            sb2 = new StringBuilder(lineWidth);
-//            for (int i=0; i<lineWidth; i++) {
-//                sb2.setCharAt(i, ' ');
-//            }
-//            switch (just) {
-//            case 'l':
-//                sb2.replace(0, word.length(), word);
-//                result.append(sb2).append('\n');
-//                break;
-//                
-//            case 'r':
-//                sb2.replace(lineWidth-word.length()-1, lineWidth, word);
-//                result.append(sb2).append('\n');
-//                break;
-//                
-//            case 'c':
-//                int rest = lineWidth - word.length();
-//                if (rest % 2 != 0) {
-//                    sb2.replace(((int)(rest/2))+1, lineWidth - rest/2-1, word);
-//                } else {
-//                    sb2.replace(rest/2, lineWidth - rest/2, word);
-//                }
-//                result.append(sb2).append('\n');
-//                break;
-//                
-//            default:
-//                break;
-//            }
-//        }
     }
     
 }
