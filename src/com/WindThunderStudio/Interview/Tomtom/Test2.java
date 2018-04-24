@@ -6,29 +6,41 @@ public class Test2 {
     class Solution {
         public int solution(int[] A) {
             int N = A.length;
-            int[] sum1 = new int[N];
-            int[] sum2 = new int[N];
-            int[] sum2Rev = new int[N];
-            sum1[0] = A[0];
-            for (int i=1; i<N; i++) {
-                sum1[i] = A[i] + sum1[i-1];
-            }
-            System.out.println(sum1);
-            sum2[0] = A[N-1];
-            for (int i=N-2; i>=0; i--) {
-                sum2[i] = A[i] + sum2[i+1];
-            }
-            System.out.println(sum2);
-            for (int i=0; i<N; i++) {
-                sum2Rev[i] = sum2[N-1-i];
-            }
-            System.out.println(sum2Rev);
+            boolean[] minA = new boolean[N];
+            boolean[] maxA = new boolean[N];
             
+            int max = A[0];
+            int min = A[N-1];
+            /* when the index increases, find the max value;
+              if not max, is false */
             for (int i=0; i<N; i++) {
-                if (sum1[i]<=(i+1)*A[i] && sum2Rev[i]>= (N-1-i)*A[i]) {
+                if (A[i] >= max) {
+                    max = A[i];
+                    minA[i] = true;
+                } else {
+                    minA[i] = false;
+                }
+            }
+
+            /* when the index decreases, find the min value;
+              if not min, is false */
+            for (int i=N-1; i>=0; i--) {
+                if (A[i] <= min) {
+                    min = A[i];
+                    maxA[i] = true;
+                } else {
+                    maxA[i] = false;
+                }
+            }
+
+            /* when one value is the max in the first array, and
+              is the min in the second array, it is the magnitude pole.*/
+            for (int i=0; i<N; i++) {
+                if (minA[i] && maxA[i]) {
                     return i;
                 }
             }
+            /* if nothing is returned till now, there is not magnitude pole. */
             return -1;
         }
     }
