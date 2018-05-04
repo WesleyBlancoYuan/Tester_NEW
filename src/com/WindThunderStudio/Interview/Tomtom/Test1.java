@@ -29,12 +29,12 @@ public class Test1 {
     public static void main(String[] args) {
         Solution s1 = new Test1().new Solution();
         List<Integer> a = new ArrayList<>();
-        int[] A = new int[] {2, 3, -1, 1, 3};
-//        int[] A = new int[10];
-//        for (int i=0; i<10; i++) {
-//            A[i] = new Random().nextInt(20) - 10;
-//            System.out.println("A has element: " + A[i]);
-//        }
+//        int[] A = new int[] {2, 3, -1, 1, 3};
+        int[] A = new int[100];
+        for (int i=0; i<100; i++) {
+            A[i] = new Random().nextInt(200) - 100;
+            System.out.println("Number at position " + i + " is: " + A[i]);
+        }
         int result = s1.solution(A);
         System.out.println(result);
     }
@@ -57,7 +57,7 @@ public class Test1 {
                 next = A[next] + next;
                 System.out.println("Now the next index is: " + next);
                 
-                if (next > N || next < 0) { /* next index can be negative!!!!! Error!!!! */
+                if (next >= N || next < 0) { /* next index can be negative!!!!! Error!!!! */
                     System.out.println("Now jump out. ");
                     return times+1;
                 }
