@@ -1,7 +1,11 @@
 package com.WindThunderStudio.Interview.Tomtom;
 
 import java.util.Arrays;
-
+/**
+ * magnitude pole
+ * @author yangliang.ding
+ *
+ */
 public class Test2 {
     class Solution {
         public int solution(int[] A) {
