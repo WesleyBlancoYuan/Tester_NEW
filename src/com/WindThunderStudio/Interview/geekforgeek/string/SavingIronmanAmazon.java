@@ -32,7 +32,7 @@ package com.WindThunderStudio.Interview.geekforgeek.string;
 public class SavingIronmanAmazon {
     public static void main(String[] args) {
         SavingIronmanAmazon savingIronmanAmazon = new SavingIronmanAmazon();
-        String s1 = "I am :IronnorI Ma, i";
+        String s1 = "I ám :IronnorI Má, i";
         String s2 = "Ab?/Ba";
         System.out.println(savingIronmanAmazon.saveIronman(s1));
         System.out.println(savingIronmanAmazon.saveIronman(s2));
@@ -46,20 +46,21 @@ public class SavingIronmanAmazon {
         // and:
         // http://www.regular-expressions.info/unicode.html#prop.
         // \\P{L}: not letter \\p{L}: letter
-        String noSymbolUnicode = s.replaceAll("[^\\P{L}0-9]", "");
+        String noSymbolUnicode = s.replaceAll("[\\P{L}0-9]", "");
         // the most complete case:\P{M}\p{M}*+, to match different encoding of letters with diacritics. (one code point or two)
-        String noSymbolUnicodeComplete = s.replaceAll("[^\\P{M}\\p{M}*0-9]", "");
+        //String noSymbolUnicodeComplete = s.replaceAll("[\\P{M}\p{M}*+0-9]", ""); //not working
         
         //delete whitespace
-        noSymbolUnicodeComplete = noSymbolUnicodeComplete.replaceAll(" ", "");
+        //noSymbolUnicodeComplete = noSymbolUnicodeComplete.replaceAll(" ", "");
+        noSymbolUnicode = noSymbolUnicode.toLowerCase();
         
-        System.out.println("Preprocessed string: " + noSymbolUnicodeComplete);
-        if (noSymbolUnicodeComplete.length() == 1) {
+        System.out.println("Preprocessed string: " + noSymbolUnicode);
+        if (noSymbolUnicode.length() == 1) {
             return "YES";
         } else {
-            int length = noSymbolUnicodeComplete.length();
+            int length = noSymbolUnicode.length();
             for (int i=0; i<(int)length/2; i++) { //no matter is even or odd
-                if (noSymbolUnicodeComplete.charAt(i) != noSymbolUnicodeComplete.charAt(length-1-i)) {
+                if (noSymbolUnicode.charAt(i) != noSymbolUnicode.charAt(length-1-i)) {
                     return "NO";
                 } else {
                     continue;

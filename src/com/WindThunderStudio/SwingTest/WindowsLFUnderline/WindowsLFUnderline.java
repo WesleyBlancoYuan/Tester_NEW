@@ -29,7 +29,7 @@ public class WindowsLFUnderline extends JDialog {
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
 //            UIManager.setLookAndFeel(new WindowsClassicLookAndFeel());
-            //UIManager.setLookAndFeel(new WindowsLookAndFeel());
+//            UIManager.setLookAndFeel(new WindowsLookAndFeel());
             UIManager.put("Label.font", new Font("SimSun", Font.PLAIN, 14));
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
