@@ -21,6 +21,9 @@ import java.util.Random;
  * 
  * Final result: correct, but I didn't consider that 'next' can be negative!!!! 
  * Index of an array cannot be negative!!!!! Big mistake.
+ * 
+ * And, the return value should be consistent! always times or times+1:
+ * imagine that when I jump out at the first step: A[100000] and jumps out, should return 1.
  */
 public class Test1 {
     public static void main(String[] args) {
@@ -67,7 +70,7 @@ public class Test1 {
                 }
                 
             }
-            return times;
+            return times + 1; //be consistent!!! didn't consider the first step jumping out.
         }
     }
 }
