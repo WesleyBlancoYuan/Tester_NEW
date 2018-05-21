@@ -1,14 +1,16 @@
 package com.WindThunderStudio.Interview.Codurance;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 
 public class Util {
-    protected String dateDiff(Date date1, Date date2) {
-        long seconds = date2.getTime() - date1.getTime();
+    static String dateDiff(LocalDateTime date1, LocalDateTime date2) {
+        Duration secondsDuration = Duration.between(date1, date2);
+        long seconds = secondsDuration.getSeconds();
         if (0 <= seconds && seconds < 60) {
             return seconds + " seconds ago";
         } else if (seconds <= 3600){
@@ -18,7 +20,7 @@ public class Util {
             int hours = (int)seconds / 3600;
             return hours + " hours ago";
         } else {
-            LocalDate localDate = date1.toLocalDate();
+            LocalDate localDate = LocalDate.now();
             int year = localDate.getYear();
             String month = localDate.getMonth().toString();
             int day = localDate.getDayOfMonth();
@@ -26,11 +28,20 @@ public class Util {
         }
     }
     
-    private String toTwoDigits(int day) {
+    private static String toTwoDigits(int day) {
         if (1 <= day && day <= 9) {
             return "0" + day;
         } else {
-            return 
+            return Integer.toString(day);
         }
+    }
+    
+    /**
+     * Extract the tweet content from the user input line.
+     * @param input the line user has entered.
+     * @return the real content of tweet to publish.
+     */
+    protected static String getContentFromInput(String input) {
+        return input.substring(input.indexOf("->") + 3, input.length());
     }
 }

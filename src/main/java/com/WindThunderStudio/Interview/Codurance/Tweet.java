@@ -1,14 +1,16 @@
 package com.WindThunderStudio.Interview.Codurance;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Tweet {
-    private Date date;
+    private String content;
+    private LocalDateTime date;
     private User user;
-    protected Date getDate() {
+    protected LocalDateTime getDate() {
         return date;
     }
-    protected void setDate(Date date) {
+    protected void setDate(LocalDateTime date) {
         this.date = date;
     }
     protected User getUser() {
@@ -18,6 +20,12 @@ public class Tweet {
         this.user = user;
     }
     
+    protected String getContent() {
+        return content;
+    }
+    protected void setContent(String content) {
+        this.content = content;
+    }
     public Tweet() {
         
     }

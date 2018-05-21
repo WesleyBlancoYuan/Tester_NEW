@@ -1,30 +1,34 @@
 package com.WindThunderStudio.Interview.Codurance;
 
-import java.lang.reflect.Array;
+import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Chatty {
-    private Scanner sc;
     private String line;
-    private Set<String> users;
-    /* the posts by username */
-    private Map<String, List<String>> posts;
-    private Map<String, List<String>> followings;
+    private Set<User> users;
     
     public Chatty() {
-        this.sc = new Scanner(System.in);
         this.users = new HashSet<>();
-        this.posts = new HashMap<>();
-        this.followings = new HashMap<>();
     }
     
-    public int readInput() {
+    public User getUserByName(String username) {
+        for (User u: users) {
+            if (u.getName().equalsIgnoreCase(username)) {
+                return u;
+            }
+        }
+        return null;
+    }
+    public int readInput(InputStream in) {
+        Scanner sc = new Scanner(in);
         while (sc.hasNextLine()) {
             line = sc.nextLine();
             if (line.equalsIgnoreCase("exit")) {
@@ -37,7 +41,7 @@ public class Chatty {
                 wall(splits[0]);
             } else if (splits.length >= 3) {
                 if (splits[1].equals("->")) {
-                    posting(splits[0], line.substring(line.indexOf("->") + 3, line.length()));
+                    posting(splits[0], Util.getContentFromInput(line));
                 } else if (splits[1].equals("follows")) {
                     following(splits[0], splits[2]);
                 }
@@ -47,10 +51,15 @@ public class Chatty {
     }
     
     private void reading(String username) {
-        if (users.contains(username)) {
-            List<String> tweets = posts.get(username);
-            for (String t: tweets) {
-                showTweet(t);
+        User current = containsUser(username);
+        if (current != null) {
+            List<Tweet> tweets = current.getOrderedTweets();
+            if (tweets != null) {
+                for (Tweet t: tweets) {
+                    showTweet(t);
+                }
+            } else {
+                System.out.println(); //no posts, new line
             }
         } else {
             System.out.println(); //no posts, new line
@@ -58,16 +67,21 @@ public class Chatty {
     }
     /* shows your tweets and those who you follow */
     private void wall(String username) {
-        if (users.contains(username)) {
-            List<String> following = followings.get(username);
-            if (following == null) {
-                reading(username); //if no following, just show user1 posts
-            } else {
-                for (String follow: following) {
-                    reading(follow);
-                }
+        User current = containsUser(username);
+        if (current != null) {
+            List<Tweet> allTweets = new ArrayList<>();
+            List<User> following = current.getFollowings();
+            
+            for (User u: following) {
+                allTweets.addAll(u.getTweets());
             }
             
+            allTweets.addAll(current.getTweets());
+            
+            List<Tweet> allTweetsInOrder = allTweets.stream().sorted(Comparator.comparing(Tweet::getDate).reversed()).collect(Collectors.toList());
+            for (Tweet t: allTweetsInOrder) {
+                showTweet(t);
+            }
             
         } else {
             noTweets();
@@ -75,39 +89,63 @@ public class Chatty {
     }
     
     private void posting(String username, String tweet) {
-        List<String> tweetsOfUser = new ArrayList<String>();
-        if (users.contains(username)) {
-            tweetsOfUser = (ArrayList<String>) posts.get(username);
-            if (tweetsOfUser == null) {
-                tweetsOfUser = new ArrayList<String>();
-            }
+        Tweet newTweet = new Tweet();
+        newTweet.setContent(tweet);
+        newTweet.setDate(LocalDateTime.now());
+        User current = containsUser(username);
+        if (current != null) {
+            newTweet.setUser(current);
+            current.addTweet(newTweet);
         } else {
-            users.add(username);
+            User newUser = new User();
+            newUser.setName(username);
+            users.add(newUser);
+            newTweet.setUser(newUser);
+            newUser.addTweet(newTweet);
         }
-        tweetsOfUser.add(tweet);
-        posts.put(username, tweetsOfUser);
-        showTweet(tweet);
+        showTweet(newTweet);
     }
     
     private void following(String user1, String user2) {
-        List<String> following = new ArrayList<String>();
-        if (users.contains(user1)) {
-            following = (ArrayList<String>) followings.get(user1);
-            if (following == null) {
-                following = new ArrayList<>();
-            }
-                
-        } else {
-            users.add(user1);
+        User user1obj = containsUser(user1);
+        if (user1obj == null) {
+            user1obj = new User();
+            user1obj.setName(user1);
+            users.add(user1obj);
         }
-        following.add(user2);
-        followings.put(user1, following);
+        User user2obj = containsUser(user2);
+        if (user2obj == null) {
+            user2obj = new User();
+            user2obj.setName(user2);
+            users.add(user2obj);
+        }
+        List<User> following = user1obj.getFollowings();
+        if (!following.contains(user2obj)) {
+            following.add(user2obj);
+        }
     }
-    private void showTweet(String tweet) {
-        System.out.println(tweet);
+    private void showTweet(Tweet tweet) {
+        System.out.println(tweet.getContent() + " (" + Util.dateDiff(tweet.getDate(), LocalDateTime.now()) + ")");
     }
     
     private void noTweets() {
         System.out.println();
+    }
+    
+    private User containsUser(String username) {
+        if (users == null) {
+            return null;
+        } else if (users.isEmpty()) {
+            return null;
+        } else {
+            User current = null;
+            for (User u: users) {
+                if (u.getName().equalsIgnoreCase(username)) {
+                    current = u;
+                    break;
+                }
+            }
+            return current;
+        }
     }
 }

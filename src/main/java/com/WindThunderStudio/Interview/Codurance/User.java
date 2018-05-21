@@ -1,7 +1,9 @@
 package com.WindThunderStudio.Interview.Codurance;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class User {
     private String name;
@@ -32,7 +34,14 @@ public class User {
     protected void setFollowings(List<User> followings) {
         this.followings = followings;
     }
-
+    
+    protected List<Tweet> getOrderedTweets() {
+        if (this.tweets == null) {
+            return null;
+        } else {
+            return this.tweets.stream().sorted(Comparator.comparing(Tweet::getDate).reversed()).collect(Collectors.toList());
+        }
+    }
     public User() {
         this.tweets = new ArrayList<>();
         this.followings = new ArrayList<>();
