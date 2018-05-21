@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Path;
 
 public class ReadingFiles {
@@ -23,7 +25,9 @@ public class ReadingFiles {
     
     public static void main(String[] args) {
         ReadingFiles reader = new ReadingFiles();
-        File f = reader.read("files/new.csv"); //relative path: searching from sys var "user.dir", usually where JVM is invoked. Here is project root.
+        File file = new File("files\\new.csv");
+        URL url = ReadingFiles.class.getResource("/new.csv"); //get project root real path
+        File f = reader.read(url.getPath()); //relative path: searching from sys var "user.dir", usually where JVM is invoked. Here is project root.
         //absolute path: searching from system root
         //try with resources: ensure to close resources after use;
         //can have exception and catch block, just same as try {}
